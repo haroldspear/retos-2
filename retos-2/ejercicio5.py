@@ -7,13 +7,15 @@ hashtags = ["#videogames", "#gaming", "#nintendoswitch"]
 start_date = datetime.fromtimestamp(1556686800).date()
 end_date = datetime.fromtimestamp(1564721999).date()
 
+NO_LIMIT_RANGE = False
+
 def have_palindrome(post):
     for text in post.split():
         if text.isalpha():
             if len(text) > 1:
                 if text == text[::-1]:
-                    return True
-    return False
+                    return text
+    return "False"
 
 data=os.listdir("data")
 palindrome_posts={}
@@ -33,20 +35,25 @@ for file in data:
                 day = str(datetime.fromtimestamp(timestamp).strftime("%d-%m-%Y"))
                 date = date_time.date()
                 #Limit range date
-                if start_date <= date <= end_date:
+                if start_date <= date <= end_date or NO_LIMIT_RANGE:
                     if caption!=None:
                         post_description=caption["text"]
                         for hashtag in hashtags:
                             if hashtag in post_description:
-                                if have_palindrome(post_description):
+                                palindrome = have_palindrome(post_description)
+                                if palindrome != "False":
                                     post_description=post_description.replace("\n"," ")
                                     post_description=post_description.replace("\t"," ")
                                     post_description=post_description.replace("\r"," ")
                                     post_description=post_description.replace(","," ")
 
-                                    palindrome_posts[hashtag].append(day+","+str(likes)+","+str(comments)+","+post_description+","+url+"\n")
+                                    palindrome_posts[hashtag].append(day+","+str(likes)+","+str(comments)+","+palindrome+","+post_description+","+url+"\n")
+preppend = ""
+if NO_LIMIT_RANGE:
+    preppend = "../output_using_all_data/"
 
 for hashtag in palindrome_posts.keys():
-    with open("ej5_output/"+hashtag+"_palindrome"+".csv", "w", encoding="utf-8") as file:
-        file.write("day,likes_number,comments_number,post_description,url"+"\n")
-        file.writelines(palindrome_posts[hashtag])
+    if len(palindrome_posts[hashtag]) > 0:
+        with open(preppend+"ej5_output/"+hashtag+"_palindrome"+".csv", "w", encoding="utf-8") as file:
+            file.write("day,likes_number,comments_number,palindrome_found,post_description,url"+"\n")
+            file.writelines(palindrome_posts[hashtag])
