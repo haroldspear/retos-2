@@ -24,7 +24,7 @@ python get_data.py
 Ejecución en paralelo:
 
 ```
-python get_data.py
+python get_data.py -u instagramapi22@gmail.com -p instagramapi44 -ha gaming
 ```
 
 Ejecución de los ejercicios:
