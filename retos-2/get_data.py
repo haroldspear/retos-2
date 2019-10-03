@@ -2,15 +2,31 @@ from InstagramAPI import InstagramAPI as iApi
 import random
 from time import sleep
 import json
+import sys
+import argparse
 
-api = iApi("instagramapi23@gmail.com","instagramapi44")
+hashtags_default = ["nintendoswitch","gaming","nintendoswitch"]
+
+parser = argparse.ArgumentParser(description='Obtiene el top 20 de handles que postearon cada # por año, mes y día' )
+parser.add_argument('-u', '--user', dest='user', help='--user Email de la cuenta de instagram', default="instagramapi23@gmail.com")
+parser.add_argument('-p', '--pass', dest='password', help='--pass Contraseña de la cuenta de instagram', default="instagramapi44")
+parser.add_argument('-ha', '--hashtag', dest='hashtag', help='Especificar un hastgag del cual obtener la data', default="False%")
+
+args = parser.parse_args(sys.argv[1:])
+user = args.user
+password = args.password
+api = iApi(user,password)
 api.login()
 next_max_id =""
 current_date = 99999999999999
 end_date = 1556686800000
 start_date = 1564721999000
 #videogames,#gaming,# nintendoswitch
-hashtags = ["nintendoswitch"]
+if args.hashtag == "False%":
+    hashtags = hashtags_default[:]
+else:
+    hashtags = [args.hashtag]
+
 count = 1
 posts = []
 comments_count = 1
@@ -21,7 +37,6 @@ for hashtag in hashtags:
         comments_file.write("")
     while True :
         try:
-            print(count,comments_count)
             feed = api.getHashtagFeed(hashtag, next_max_id)
             temp = api.LastJson
             """last_item = len(temp["items"])-1
@@ -32,7 +47,6 @@ for hashtag in hashtags:
                 sleep(random.randint(1,3))
                 next_max_id = temp["next_max_id"]
                 continue"""
-            print(next_max_id)
             for post in temp["items"]:
                 current_date = post["taken_at"]*1000
                 #if current_date <= start_date:
@@ -82,6 +96,3 @@ for hashtag in hashtags:
     if len(posts) > 0:
         with open("data/posts_"+hashtag+"_end"+".json", "w", encoding="utf-8") as posts_json:
             json.dump(posts, posts_json)
-
-            api = iApi("haroldapiinstagram@gmail.com","instagramapi44")
-            hashtags = ["videogames"]

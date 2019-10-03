@@ -12,7 +12,7 @@ args = parser.parse_args(sys.argv[1:])
 
 NO_LIMIT_RANGE = False
 DATASET_FOLDER = "../data"
-OUTPUT_FOLDER = "ej0_output"
+OUTPUT_FOLDER = "ej4_output"
 
 YEAR_DATA = 2019
 
